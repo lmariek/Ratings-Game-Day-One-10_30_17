@@ -92,6 +92,17 @@ def log_confirm():
         flash('Incorrect login information')
         return redirect('/log_in')
 
+@app.route('/users/<user_id>')
+def display_user_details(user_id):
+
+    user = User.query.get(user_id)
+    age = user.age
+    zipcode = user.zipcode
+    ratings = user.ratings
+
+    return render_template('user_details.html', user=user, age=age, 
+                                                zipcode=zipcode, ratings=ratings)
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

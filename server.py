@@ -22,7 +22,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
-  
+
     return render_template('homepage.html')
 
 
@@ -41,6 +41,7 @@ def register_user():
 
 @app.route('/registration_confirm', methods=["POST"])
 def redirect_to_users():
+    """Check account registration information for user."""
 
     email = request.form.get("email")
     password = request.form.get("password")
@@ -96,6 +97,7 @@ def log_confirm():
 
 @app.route('/users/<user_id>')
 def display_user_details(user_id):
+    """Display information about each user."""
 
     user = User.query.get(user_id)
     age = user.age
@@ -105,24 +107,43 @@ def display_user_details(user_id):
     return render_template('user_details.html', user=user, age=age, 
                                                 zipcode=zipcode, ratings=ratings)
 
+
 @app.route('/movies')
 def movie_list():
     """Show list of movies."""
 
-    movies = Movie.query.all()
+    movies = Movie.query.order_by(Movie.title).all()
     return render_template('movies_list.html', movies=movies)
+
 
 @app.route('/movies/<movie_id>')
 def display_movie_details(movie_id):
+    """Display information about each movie."""
 
     movie = Movie.query.get(movie_id)
     title = movie.title
     released_at = movie.released_at
     imdb_url = movie.imdb_url
 
+    #pull out scores for movie
+    ratings = movie.ratings
+
+    total_scores = 0
+    count = 0
+    #calculate average rating for each movie
+    for rating in ratings:
+        num_rating = rating.score
+        total_scores += rating.score
+        count += 1
+
+    avg = total_scores/count
+
+
     return render_template('movie_details.html', movie=movie, title=title,
                                                 released_at=released_at,
-                                                imdb_url=imdb_url)
+                                                imdb_url=imdb_url, avg=avg,
+                                                ratings=ratings)
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

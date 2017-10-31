@@ -5,9 +5,14 @@
     <ul>
         <li>Title: {{ title }}</li>
         <li>Release Date: {{ released_at }}</li>
-        <li><a href={{ imdb_url }}>Visit on IMDB</a></li>
-        <li> Average Rating:</li>
-     </li>
+        <li><a href= '{{ imdb_url }}'>Visit on IMDB</a></li>
+        <li> Average Rating: {{ avg }}</li>
+        <li> All ratings:     
+            <ul>
+                {% for rating in ratings %}
+                <li>{{ rating.score }}
+                {% endfor %}
+            </ul>
     </ul>
 
 {% endblock %}

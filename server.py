@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 
-from flask import (Flask, jsonify, render_template, redirect, request, flash, session)
+from flask import Flask, jsonify, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import User, Rating, Movie, connect_to_db, db
@@ -45,11 +45,52 @@ def redirect_to_users():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    new_user = User(email=email, password=password)
-    db.session.add(new_user)
-    db.session.commit()
+    test = len(User.query.filter(User.email == email).all())
+    if test >= 1:
+        flash('This user already exists')
+    else:
+        new_user = User(email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        session['user_id'] = new_user.user_id
 
     return redirect("/users")
+
+@app.route('/log_in')
+def log_in():
+    """Renders log in form."""
+
+    return render_template('log_in_form.html')
+
+
+@app.route('/log_out')
+def log_out():
+    """Logs out user and removes from session."""
+
+    flash('Successfully logged out')
+    del session['user_id']
+    return redirect('/')
+
+@app.route('/log_confirm', methods=["POST"])
+def log_confirm():
+    """Check whether email and password input matches database."""
+
+    new_email = request.form.get("email")
+    password = request.form.get("password")
+    check = User.query.filter(User.email == new_email).first()
+
+    if check:
+
+        if check.password == password:
+            session['user_id'] = check.user_id
+            flash('Logged In')
+            return redirect('/')
+        else:
+            flash('Incorrect password')
+            return redirect('/log_in')
+    else:
+        flash('Incorrect login information')
+        return redirect('/log_in')
 
 
 if __name__ == "__main__":

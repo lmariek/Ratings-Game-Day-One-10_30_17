@@ -71,6 +71,7 @@ def log_out():
     del session['user_id']
     return redirect('/')
 
+
 @app.route('/log_confirm', methods=["POST"])
 def log_confirm():
     """Check whether email and password input matches database."""
@@ -84,13 +85,14 @@ def log_confirm():
         if check.password == password:
             session['user_id'] = check.user_id
             flash('Logged In')
-            return redirect('/')
+            return redirect('/users/{user_id}'.format(user_id=check.user_id))
         else:
             flash('Incorrect password')
             return redirect('/log_in')
     else:
         flash('Incorrect login information')
         return redirect('/log_in')
+
 
 @app.route('/users/<user_id>')
 def display_user_details(user_id):
@@ -103,6 +105,24 @@ def display_user_details(user_id):
     return render_template('user_details.html', user=user, age=age, 
                                                 zipcode=zipcode, ratings=ratings)
 
+@app.route('/movies')
+def movie_list():
+    """Show list of movies."""
+
+    movies = Movie.query.all()
+    return render_template('movies_list.html', movies=movies)
+
+@app.route('/movies/<movie_id>')
+def display_movie_details(movie_id):
+
+    movie = Movie.query.get(movie_id)
+    title = movie.title
+    released_at = movie.released_at
+    imdb_url = movie.imdb_url
+
+    return render_template('movie_details.html', movie=movie, title=title,
+                                                released_at=released_at,
+                                                imdb_url=imdb_url)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

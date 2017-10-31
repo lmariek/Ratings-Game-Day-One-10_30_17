@@ -47,7 +47,7 @@ def load_movies():
     # Read u.item file and insert data
     for row in open("seed_data/u.item"):
         row = row.rstrip()
-        movie_id, title, released_at, imdb_url = row.split("|")[:4]
+        movie_id, title, released_at, arg, imdb_url = row.split("|")[:5]
 
         if released_at:
             released_at = dt.datetime.strptime(released_at, "%d-%b-%Y")

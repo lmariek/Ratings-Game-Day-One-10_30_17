@@ -2,12 +2,12 @@
 {% block content %}
 
     <h2> Movie Details</h2>
-    {% if not user_rating %}
+    {% if prediction %}
     <h3>Predicted Rating:{{ "{:.2f}".format(prediction) }}</h3>
-    {% endif %}
-    {% if user_rating %}
+    {% else %}
     <h3>Your Rating:{{ user_rating.score }}</h3>
     {% endif %}
+    <h1>The judgmental Eye says: <br> {{ beratement }}</h1>
     <form action='/rate_movie/{{ movie_id }}' method='POST'>
     {% if 'user_id' in session %}
         <h3>Select your Rating:</h3>

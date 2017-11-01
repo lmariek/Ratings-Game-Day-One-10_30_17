@@ -121,9 +121,11 @@ def display_movie_details(movie_id):
     """Display information about each movie."""
 
     movie = Movie.query.get(movie_id)
+    movie_id = movie.movie_id
     title = movie.title
     released_at = movie.released_at
     imdb_url = movie.imdb_url
+
 
     #pull out scores for movie
     ratings = movie.ratings
@@ -142,7 +144,30 @@ def display_movie_details(movie_id):
     return render_template('movie_details.html', movie=movie, title=title,
                                                 released_at=released_at,
                                                 imdb_url=imdb_url, avg=avg,
-                                                ratings=ratings)
+                                                ratings=ratings,
+                                                movie_id=movie_id)
+
+
+@app.route('/rate_movie/<movie_id>', methods=['POST'])
+def add_rating_to_db(movie_id):
+
+    rating = request.form.get('rating')
+
+    temp_user_id = session['user_id']
+    check = Rating.query.filter(Rating.user_id == temp_user_id,
+                         Rating.movie_id == movie_id).first()
+
+    if check:
+        check.score = rating
+        db.session.commit()
+    else:
+        new_rating = Rating(score=rating,
+                            user_id=temp_user_id,
+                            movie_id=movie_id)
+        db.session.add(new_rating)
+        db.session.commit()
+
+    return redirect('/movies/{movie_id}'.format(movie_id=movie_id))
 
 
 if __name__ == "__main__":

@@ -3,6 +3,12 @@
 <head>
   <title>Ratings</title>
 </head>
+    <a href='/'>Home</a><br>
+    {% if 'user_id' not in session %}
+      <a href='/log_in'>Log In</a>
+    {% else %}
+      <a href='/log_out'>Log Out</a>
+    {% endif %}
 
 <body>
 

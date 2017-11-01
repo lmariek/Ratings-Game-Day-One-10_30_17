@@ -138,7 +138,7 @@ def display_movie_details(movie_id):
         total_scores += rating.score
         count += 1
 
-    avg = total_scores/count
+    avg = total_scores/float(count)
 
 
     return render_template('movie_details.html', movie=movie, title=title,
@@ -150,6 +150,7 @@ def display_movie_details(movie_id):
 
 @app.route('/rate_movie/<movie_id>', methods=['POST'])
 def add_rating_to_db(movie_id):
+    """Update rating display to include new user input."""
 
     rating = request.form.get('rating')
 

@@ -113,7 +113,8 @@ def movie_list():
     """Show list of movies."""
 
     movies = Movie.query.order_by(Movie.title).all()
-    return render_template('movies_list.html', movies=movies)
+    edited_movies = movies[1:]
+    return render_template('movies_list.html', movies=edited_movies)
 
 
 @app.route('/movies/<movie_id>')

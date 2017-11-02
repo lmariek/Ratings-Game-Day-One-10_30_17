@@ -7,7 +7,9 @@
     {% else %}
     <h3>Your Rating:{{ user_rating.score }}</h3>
     {% endif %}
+    {% if beratement %}
     <h1>The judgmental Eye says: <br> {{ beratement }}</h1>
+    {% endif %}
     <form action='/rate_movie/{{ movie_id }}' method='POST'>
     {% if 'user_id' in session %}
         <h3>Select your Rating:</h3>

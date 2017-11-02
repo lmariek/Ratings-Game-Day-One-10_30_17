@@ -129,7 +129,7 @@ def display_movie_details(movie_id):
     user_id = session.get("user_id")
 
     if user_id:
-        user_rating = Rating.query.filter_by(
+        user_rating = Rating.query.options(db.joinedload('movie')).filter_by(
             movie_id=movie_id, user_id=user_id).first()
 
     else:
@@ -181,12 +181,14 @@ def display_movie_details(movie_id):
     else:
         eye_rating = eye_rating.score
 
-    if eye_rating and effective_rating:
-        difference = abs(eye_rating - effective_rating)
+    # if eye_rating and effective_rating:
+    #     difference = abs(eye_rating - effective_rating)
 
-    else:
-        # We couldn't get an eye rating, so we'll skip difference
-        difference = None
+    # else:
+    #     # We couldn't get an eye rating, so we'll skip difference
+    #     difference = None
+
+    difference = abs(eye_rating - effective_rating) if eye_rating and effective_rating else None
 
     BERATEMENT_MESSAGES = [
         "I suppose you don't have such bad taste after all.",
@@ -198,11 +200,13 @@ def display_movie_details(movie_id):
         "Words cannot express the awfulness of your taste."
     ]
 
-    if difference is not None:
-        beratement = BERATEMENT_MESSAGES[int(difference)]
+    # if difference is not None:
+    #     beratement = BERATEMENT_MESSAGES[int(difference)]
 
-    else:
-        beratement = None
+    # else:
+    #     beratement = None
+
+    beratement = BERATEMENT_MESSAGES[int(difference)] if difference else None
 
 
     return render_template('movie_details.html', movie=movie, title=title,
